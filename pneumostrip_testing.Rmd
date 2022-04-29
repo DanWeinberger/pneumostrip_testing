@@ -1,0 +1,67 @@
+---
+title: "pneumostrip_test"
+author: "Dan Weinberger"
+date: "4/28/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(readxl)
+library(reshape2)
+library(ggplot2)
+library(dplyr)
+```
+
+```{r}
+a1 <- read_excel('./Data/ps_data.xlsx')
+
+a1.m <- reshape2::melt(a1, id.vars=c('Pool'))
+
+a1.m$value <- factor(a1.m$value, levels=c(0,1,2,3,4))
+
+a1.m <- a1.m[!is.na(a1.m$Pool),]
+```
+
+
+```{r, fig.width=8, fig.height=8}
+p1 <- ggplot(a1.m[!(a1.m$variable %in% c('ply','CpsA','auto')),], aes(Pool, variable, fill= value)) +
+  geom_tile() +
+  theme_classic()+
+  ylab('Serotype tested')+
+   scale_discrete_manual('fill', name='Test results',
+                     labels=c('Negative',
+                              'False pos on PS, not tested MP',
+                              'False Pos PS, neg MP ',
+                              "False Pos on MP, neg on PS",
+                              'Pos on both MP and PS'
+                              ),
+                     values=c('0'= "#5ab4ac",  
+                              '1' ="#f6e8c3", 
+                              '2'="#f6e8c3",
+                              '3'='#d8b365',
+                              '4'='#8c510a'))
+p1
+```
+
+
+
+```{r, fig.width=8, fig.height=2}
+
+b1 <- a1.m[(a1.m$variable %in% c('ply','CpsA','auto')),]
+
+b1$value <- factor(b1$value, levels=c('0','1'))
+
+p2 <- ggplot(b1, aes(Pool, variable, fill= value)) +
+  geom_tile() +
+  theme_classic()+
+  ylab('Gene target')+
+   scale_discrete_manual('fill', name='Test result',
+                     labels=c('Negative',
+                              'False pos'
+                              ),
+                     values=c('0'= "#5ab4ac",  
+                              '1' ='#8c510a'))
+p2
+```
+
