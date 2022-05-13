@@ -13,6 +13,12 @@ library(ggplot2)
 library(dplyr)
 ```
 
+0 Hasn't been detected 						0
+1 FP on PS hasn't been run/not included on MP						1
+2 FP on PS negative on MP						2
+3 FP on MP negative on PS						3
+4 FP on both						4
+
 ```{r}
 a1 <- read_excel('./Data/ps_data_updated.xlsx')
 
